@@ -1,0 +1,12 @@
+## Interface: 20400
+## Title: CombatHooker
+## Author: Phillis
+## Notes: Tracks interrupt cooldowns in your raid group.
+## Version: 0.1
+
+CombatHooker.lua
+CombatHooker_BarGUI.lua
+CombatHooker_SpellIconLib.lua
+CombatHooker.xml
+
+## SavedVariables: CombatHookerConfig
