@@ -1,3 +1,4 @@
+
 CombatHooker = {
     ["bars"] = {}
 }
@@ -22,9 +23,10 @@ end
 function CombatHooker:on_event(timestamp, event, ...)
     if event == "PLAYER_LOGIN" then
         CombatHookerConfig = CombatHookerConfig or {}
+        CombatHookerTimeTracker = CombatHookerTimeTracker or {}
 
         -- Create our empty BarGroups!
-        local bar_groups = {"Interrupts"}
+        local bar_groups = {"Interrupts", "Coolies"}
         for _,v in ipairs(bar_groups) do
             CombatHooker.bars[v] = create_bar_group(v).body
         end
@@ -42,12 +44,41 @@ function CombatHooker:on_event(timestamp, event, ...)
         ["Pummel"] = 10,
         ["Shield Bash"] = 12,
     }
+
+    local coolies = {
+        ["Innervate"] = 360,
+        ["Mana Tide Totem"] = 300,
+        ["Fear Ward"] = 180,
+    }
+
+    -- if eventType=="SPELL_CAST_SUCCESS" and sourceName=="Lady Vashj" then
+    --     DEFAULT_CHAT_FRAME:AddMessage(sourceName.." cast "..spellName)
+    --     if spellName == "Persuasion" then
+    --         CombatHooker:handle_spell_cast("Coolies", 30, sourceName, "Spell_Nature_UndyingStrength")
+    --     end
+    -- end
+
     if UnitInRaid(sourceName) or UnitInParty(sourceName) then
-        for spell,cd in pairs(interrupts) do
-            if eventType=="SPELL_CAST_SUCCESS" and spellName == spell then
-                CombatHooker:handle_spell_cast("Interrupts", cd, sourceName, get_spell_icon(spell))
+        if eventType=="SPELL_CAST_SUCCESS" then
+            for spell,cd in pairs(interrupts) do
+                if spellName == spell then
+                    CombatHooker:handle_spell_cast("Interrupts", cd, sourceName, get_spell_icon(spell))
+                end
+            end
+
+            for spell,cd in pairs(coolies) do
+                if spellName == spell then
+                    CombatHooker:handle_spell_cast("Coolies", cd, sourceName, get_spell_icon(spell))
+                    if spellName == "Mana Tide Totem" then
+                        PlaySoundFile("Interface\\AddOns\\CombatHooker\\sounds\\my-bubbles.mp3")
+                    end
+                end
             end
         end
+    end
+
+    if sourceName=="Ballgag" and eventType=="SWING_DAMAGE" then
+        -- PlaySoundFile("Interface\\AddOns\\CombatHooker\\sounds\\coin.mp3")
     end
 end
 

@@ -1,9 +1,11 @@
-function class_colors(class)
+local function class_colors(class)
     rgb_map = {
+        ["Druid"] =     {1,0.49,0.04},
         ["Mage"] =      {0.25,0.78,0.92},
         ["Rogue"] =     {1,0.96,0.41},
         ["Shaman"] =    {0,0.44,0.87},
         ["Warrior"] =   {0.78,0.61,0.43},
+        ["Priest"] = {1,1,1,0.5},
     }
     return rgb_map[class][1], rgb_map[class][2], rgb_map[class][3]
 end
@@ -127,6 +129,7 @@ end
 function update_bar(statusbar, max, name, icon)
     local parent = statusbar:GetParent()
     local r,g,b = class_colors(UnitClass(name))
+
 
     statusbar:SetPoint("TOPLEFT", nil,"TOPLEFT", 0, -30*#parent["active_bars"])
     statusbar:SetStatusBarColor(r, g, b)
